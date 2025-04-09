@@ -27,7 +27,7 @@ https://rm.lsnl.jp/projects/workshop/issues<br>
  発表者の増加はそのまま学習効率の向上に繋がるため、極力全員が発表を行えるようにする。<br>
  効率の良い学習を実現するために、少し硬い表現になりますが、下記のredmineのwikiを見ていただければと思います。<br>
 https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%9B%E3%81%AE%E5%8E%9F%E7%90%86<br>
-要約すると、"give and take を意識することで、学習効率を{参加人数}倍にする"ことを目標にしています。<br>
+要約すると、**give and take を意識することで、学習効率を{参加人数}倍にする**ことを目標にしています。<br>
 例えば参加人数が5人だと、発表を一人一回ずつ行うと学習効率は理想的には5倍になる。<br>
 ただし、それは各々が同じ量を学習し、その内容を発表した場合に限られる<br>
 普通にやると、人間は弱いので、"自分は聴講だけしたい"とか、"発表の準備をしてない"(~=フリーライダー？)となり、真面目に発表した人が損をする(真面目に発表した人は自分が発表することで一人で学習する5倍の量の知識を得られると期待しているため)。<br>
@@ -49,6 +49,7 @@ https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%
 ソサイエティ大会2025:https://www.ieice.org/jpn_r/activities/taikai/society/2025/
 ### 勉強会の担当者(発表者)
 発表した人が、次に発表する人を指名する形式でやろうかなと思っています。(例: kazuma-aが発表した場合、勉強会が終わった時に、次の発表者としてyoshiteruを指名する。)<br>
+と思っていましたが、予め発表者を決めて置いた方が準備がしやすい？<br>
 ### 勉強会係(Hidehiro, Tetsuro)にやってほしいこと
 - 勉強会の司会<br>
 始めのあいさつとかタイムキーパーとか？<br>
@@ -81,7 +82,7 @@ print("hello")
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
 [3] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
 [4] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
-[5] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう. O'Reilly Japan<br>
+[5] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう　第二版. O'Reilly Japan<br>
 [6] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
 
 ## 更新履歴
@@ -93,4 +94,4 @@ print("hello")
 2025.04.10 refrect the opinion of yoshiteru<br>
 
 
-© 2025 [Kazuma Aoyama(kazuma-a@lanl.jp), Yoshiteru Taira(yohsiteru@lsnl.jp)]
+Kazuma Aoyama(kazuma-a@lanl.jp), Yoshiteru Taira(yohsiteru@lsnl.jp)
