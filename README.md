@@ -79,6 +79,6 @@ print("hello")
 ## 更新履歴
 2025.04.09 first commit<br>
 2025.04.09 update readme(add structure of readme)<br>
-2025.04.09 fix format of refarence<br>
+2025.04.09 fix format of reference<br>
 2025.04.09 add program folder and update readme<br>
 2025.04.10 update readme<br>
