@@ -12,14 +12,15 @@ programフォルダには勉強会でコーディング予定のプログラム�
 ### 勉強会の開催頻度
 ### 勉強会の担当者(発表者)
 ### 勉強会係(Hidehiro, Tetsuro)にやってほしいこと
-"""
+```
 a = 10
 print("hello")
-"""
-"""python
+```
+```python
 a = 10
 print("hello")
-"""
+```
+
 
 
 ## 2.The Annotated Transformer①(環境構築(仮想?))
