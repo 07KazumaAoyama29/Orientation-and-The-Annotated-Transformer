@@ -18,7 +18,7 @@ https://rm.lsnl.jp/projects/adm/wiki
 https://rm.lsnl.jp/projects/workshop/issues<br>
 - 発表者が喋って聴講者が聞くという講義形式ではなく(それでもいいですが)、できればできるだけ参加者がコーディングしたり、質問や意見を交換しながらインタラクティブに学ぶことを目指しています。<br>
 ### 勉強会の目的
-下記のredmineのwikiを見ていただければいいと思います。<br>
+下記のredmineのwikiを見ていただければと思います。<br>
 https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%9B%E3%81%AE%E5%8E%9F%E7%90%86<br>
 要約すると、<br>
 - give and take を意識することで、学習効率を{参加人数}倍にする<br>
@@ -67,9 +67,9 @@ print("hello")
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
-[3] Bill Ludanovic, 鈴木駿, 長尾高弘. 入門 Python3 第二版. O'Reilly Japan<br>
-[4] Al Sweigart, 相川愛三. 面倒なことはPythonにやらせよう. O'Reilly Japan<br>
-[5] Al Sweigart, 岡田祐一. きれいなPythonプログラミング. マイナビ<br>
+[3] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
+[4] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう. O'Reilly Japan<br>
+[5] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
 
 ## 更新履歴
 2025.04.09 first commit<br>
