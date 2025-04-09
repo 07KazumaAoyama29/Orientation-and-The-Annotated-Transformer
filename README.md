@@ -65,6 +65,7 @@ https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%
 ## 質疑応答
 
 ## 2.The Annotated Transformer①(導入+環境構築)
+### 内容目標
 ### "The Annotated Transformer"とは?
 ### "Attention is All You Need"とは?
 ### pythonの環境構築(仮想環境推奨)
