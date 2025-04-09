@@ -1,4 +1,4 @@
-# 2024-04-15勉強会(オリエンテーション + The Annotated Transformer①(環境構築(仮想?)))
+# 2024-04-15勉強会(オリエンテーション + The Annotated Transformer①(導入+環境構築(仮想?)))
 ## 概要
 - 2024-04-15実施の勉強会についての資料です。<br>
 - 基本的にこの資料の上から順番に進めていきます。<br>
@@ -53,7 +53,11 @@ https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%
 
 ## 質疑応答
 
-## 2.The Annotated Transformer①(環境構築(仮想?))
+## 2.The Annotated Transformer①(導入+環境構築(仮想?))
+### The Annotated Transformerとは?
+### Attention is All You Needとは?
+### pythonの環境構築(仮想環境推奨)
+### 必要なmodule一覧
 
 ```
 a = 10
