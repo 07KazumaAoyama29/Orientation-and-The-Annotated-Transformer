@@ -18,7 +18,6 @@ https://rm.lsnl.jp/projects/adm/wiki
 https://rm.lsnl.jp/projects/workshop/issues<br>
 - 発表者が喋って聴講者が聞くという講義形式ではなく(それでもいいですが)、できればできるだけ参加者がコーディングしたり、質問や意見を交換しながらインタラクティブに学ぶことを目指しています。<br>
 ### 勉強会の目的
-
 下記のredmineのwikiを見ていただければいいと思います。<br>
 https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%9B%E3%81%AE%E5%8E%9F%E7%90%86<br>
 要約すると、<br>
