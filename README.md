@@ -12,6 +12,17 @@ programフォルダには勉強会でコーディング予定のプログラム�
 ### 勉強会の開催頻度
 ### 勉強会の担当者(発表者)
 ### 勉強会係(Hidehiro, Tetsuro)にやってほしいこと
+- 勉強会の司会<br>
+始めのあいさつとかタイムキーパーとか？<br>
+- 勉強会のリマインド<br>
+開催日の前日(月曜日)にリマインドのメールをall@lsnl.jp宛てに送る<br>
+- 勉強会の内容を何かしらで保存する<br>
+勉強会をやって終わりだともったいないので、内容をどこかに保存するとか、どこかに公開するとか何かしらしてほしい。(これは広報係のタスク？)<br>
+- 参加者が増えるように策を打つ<br>
+参加率が100%になるように何か策を打ってほしい<br>
+
+## 2.The Annotated Transformer①(環境構築(仮想?))
+
 ```
 a = 10
 print("hello")
@@ -20,10 +31,6 @@ print("hello")
 a = 10
 print("hello")
 ```
-
-
-
-## 2.The Annotated Transformer①(環境構築(仮想?))
 
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
