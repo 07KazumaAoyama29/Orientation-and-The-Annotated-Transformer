@@ -54,8 +54,8 @@ https://rm.lsnl.jp/projects/adm/wiki/%E5%8B%89%E5%BC%B7%E4%BC%9A%E8%BC%AA%E8%AC%
 ## 質疑応答
 
 ## 2.The Annotated Transformer①(導入+環境構築(仮想?))
-### The Annotated Transformerとは?
-### Attention is All You Needとは?
+### "The Annotated Transformer"とは?
+### "Attention is All You Need"とは?
 ### pythonの環境構築(仮想環境推奨)
 ### 必要なmodule一覧
 
@@ -80,3 +80,4 @@ print("hello")
 2025.04.09 update readme(add structure of readme)<br>
 2025.04.09 fix format of refarence<br>
 2025.04.09 add program folder and update readme<br>
+2025.04.10 update readme<br>
