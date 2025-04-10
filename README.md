@@ -19,7 +19,8 @@
 2025.04.09 add program folder and update readme<br>
 2025.04.10 update readme<br>
 2025.04.10 refrect the opinion of yoshiteru<br>
-2025.04.10 README.md is decomposed into /resouces/orientation.md and /resouces/TheAnnotatedTransformer1.md.
+2025.04.10 README.md is decomposed into /resouces/orientation.md and /resouces/TheAnnotatedTransformer1.md.<br>
+2025.04.10 add orientation.pdf<br>
 
 
 Kazuma Aoyama(kazuma-a@lanl.jp), Yoshiteru Taira(yohsiteru@lsnl.jp)
