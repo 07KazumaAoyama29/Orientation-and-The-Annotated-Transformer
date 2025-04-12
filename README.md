@@ -21,6 +21,8 @@
 2025.04.10 refrect the opinion of yoshiteru<br>
 2025.04.10 README.md is decomposed into /resouces/orientation.md and /resouces/TheAnnotatedTransformer1.md.<br>
 2025.04.10 add orientation.pdf<br>
+2025.04.12 refrect the opinion of Dr.shota<br>
 
+This material benefited from the assistance of ChatGPT.
 
-Kazuma Aoyama(kazuma-a@lanl.jp), Yoshiteru Taira(yohsiteru@lsnl.jp)
+Kazuma Aoyama(kazuma-a@lsnl.jp), Yoshiteru Taira(yohsiteru@lsnl.jp) and Shota Inoue(shota@lsnl.jp)

@@ -21,3 +21,7 @@ print("hello")
 [4] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
 [5] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう　第二版. O'Reilly Japan<br>
 [6] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
+
+This material benefited from the assistance of ChatGPT.
+
+Kazuma Aoyama(kazuma-a@lsnl.jp)
