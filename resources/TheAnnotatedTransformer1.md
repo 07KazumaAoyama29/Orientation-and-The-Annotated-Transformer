@@ -13,16 +13,13 @@ source ./venv/bin/activate
 ```bash
 source ./venv/Scripts/activate
 ```
-#### 仮想環境のアクティベート
-### 必要なmodule一覧
-
+#### 必要なmoduleのインストール
+```bash
+pip install -r requirements.txt #※めっちゃ時間かかります
 ```
-a = 10
-print("hello")
-```
-```python
-a = 10
-print("hello")
+#### 仮想環境のディアクティベート
+```bash
+deactivate
 ```
 ### 内容目標
 ### "The Annotated Transformer"とは?
@@ -39,4 +36,4 @@ print("hello")
 
 This material benefited from the assistance of ChatGPT.
 
-Kazuma Aoyama(kazuma-a@lsnl.jp)
+Kazuma Aoyama(kazuma-a@lsnl.jp), Yoshiteru Taira(yoshiteru@lsnl.jp)

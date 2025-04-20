@@ -22,6 +22,7 @@
 2025.04.10 README.md is decomposed into /resouces/orientation.md and /resouces/TheAnnotatedTransformer1.md.<br>
 2025.04.10 add orientation.pdf<br>
 2025.04.12 refrect the opinion of Dr.shota<br>
+2025.04.20 add requirements.txt<br>
 
 This material benefited from the assistance of ChatGPT.
 
