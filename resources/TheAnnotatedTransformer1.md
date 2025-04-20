@@ -1,8 +1,19 @@
-## 2.The Annotated Transformer①(導入+環境構築)
-### 内容目標
-### "The Annotated Transformer"とは?
-### "Attention is All You Need"とは?
+## 2.The Annotated Transformer
 ### pythonの環境構築(仮想環境推奨)
+#### "venv"という名前の仮想環境を作成
+```bash
+py -3.9 -m venv venv #pythonのバージョンは3.9にしてください。
+```
+#### 仮想環境のアクティベート
+- Linux, Mac
+```bash
+source ./venv/bin/activate
+```
+- Windows
+```bash
+source ./venv/Scripts/activate
+```
+#### 仮想環境のアクティベート
 ### 必要なmodule一覧
 
 ```
@@ -13,6 +24,10 @@ print("hello")
 a = 10
 print("hello")
 ```
+### 内容目標
+### "The Annotated Transformer"とは?
+### "Attention is All You Need"とは?
+
 
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
