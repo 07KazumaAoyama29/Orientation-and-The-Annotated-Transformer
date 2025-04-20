@@ -28,16 +28,14 @@ Transformer とは、系列情報を処理する、注意機構(Attention)を主
 ### "The Annotated Transformer"[[1]][tran]とは?
 [tran]:https://nlp.seas.harvard.edu/annotated-transformer/
 上記で述べたとおり、 Transformer の最も重要な構成要素は"Attention"です。<br>
-その"Attention"の仕組みを論文"Attention is All You Need"[[2]][att]に基づいて、コードを交えて解説している良い資料です。<br>
-[att]:https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf
+その"Attention"の仕組みを論文"Attention is All You Need"[[2]][att]に基づいて、コードを交えて解説している良い資料です。[att]:https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf<br>
 ### 背景
 Transformerの最大の特徴は、系列変換の並列計算の高速化です。少し難しい言い方をすると、畳み込みニューラルネットワーク（CNN）を基本構成要素として使用し、入力と出力のすべての位置に対して隠れた表現を並列に計算します。これにより、 Extended Neural GPU, ByteNet, ConvS2S の基盤を成しています。<br>
 Attentionの構成要素には、Self Attention, Multi Head Attention みたいな難しいのもありますが、ここでは割愛♡します。<br>
 
 ### Part1: モデル構造 Model Architecture
 #### 簡単な説明
-最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]][en]があります。<br><br>
-[en]:https://arxiv.org/abs/1409.0473
+最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]][en]があります。[en]:https://arxiv.org/abs/1409.0473<br><br>
 ここで、"エンコーダ"とは、入力シンボル表現のシーケンス （x1​，...，xn​） を連続表現のシーケンス z = （z1​，...，zn​） にマッピングするものです。通常、入力されるシンボルは離散的なもので、単語や文字などが例として挙げられます。<br>マッピングされた連続表現のシーケンス z は、ニューラルネットワークの隠れ層での計算に使われます。通常のシンボルの状態だと、ニューラルネットの計算に使いにくいので、計算しやすいベクトル表現にマッピングするみたいなイメージです。<br><br>
 "デコーダ"ではzが与えられると、シンボルの出力シーケンス（y1​，...，ym​）を1要素ずつ生成します。デコーダの出力が、最終的な出力になります。<br><br>
 要するに、エンコーダは入力を「解釈」し、デコーダはその解釈を基に出力を「生成」する役割を果たします。<br><br>
