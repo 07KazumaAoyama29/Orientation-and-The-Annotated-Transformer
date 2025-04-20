@@ -113,6 +113,7 @@ class Encoder(nn.Module):
 また、残差接続をした後にレイヤー正規化(Layer Normalization)[[5]](https://arxiv.org/abs/1607.06450)という操作が行われる。<br>
 レイヤー正規化は、各層の出力を正規化し、学習を安定させる役割を果たす。これにより、勾配の変動を抑え、学習がスムーズに行われるようになる。<br><br>
 上記の操作を、LayerNormと呼ぶ(多分)<br>
+↑は嘘でした。最終的に、zを出力される直前で呼ばれるのが、LayerNormでした。<br>
 
 #### program: LayerNorm
 ```python
@@ -168,6 +169,20 @@ class EncoderLayer(nn.Module):
         x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, mask))
         return self.sublayer[1](x, self.feed_forward)
 ```
+#### エンコーダの動きの順序
+1. 入力 (x, mask) がエンコーダに渡される。
+
+2. エンコーダのforward関数 が呼ばれ、各エンコーダ層（EncoderLayer）が順番に処理される。
+
+3. 各エンコーダ層では、Self Attention と Feedforward Network の2つのサブレイヤーが順番に処理される。
+
+4. 各サブレイヤーは、残差接続 と レイヤー正規化 が適用される。
+
+5. 最終的にエンコーダの出力が正規化(LayerNorm)され、結果が返される。
+#### エンコーダまとめ
+これにてエンコーダの実装が完了した。
+
+#### 多層デコーダ
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
