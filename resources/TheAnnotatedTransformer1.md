@@ -35,7 +35,7 @@ Attentionの構成要素には、Self Attention, Multi Head Attention みたい�
 
 ### Part1: モデル構造 Model Architecture
 #### 簡単な説明
-最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]](https://arxiv.org/abs/1409.0473)があります。<br><br>
+最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]](https://arxiv.org/abs/1409.0473)があります。Transformerでも、このモデル構造が使われています。<br><br>
 ここで、"エンコーダ"とは、入力シンボル表現のシーケンス （x1​，...，xn​） を連続表現のシーケンス z = （z1​，...，zn​） にマッピングするものです。通常、入力されるシンボルは離散的なもので、単語や文字などが例として挙げられます。<br>マッピングされた連続表現のシーケンス z は、ニューラルネットワークの隠れ層での計算に使われます。通常のシンボルの状態だと、ニューラルネットの計算に使いにくいので、計算しやすいベクトル表現にマッピングするみたいなイメージです。<br><br>
 "デコーダ"ではzが与えられると、シンボルの出力シーケンス（y1​，...，ym​）を1要素ずつ生成します。デコーダの出力が、最終的な出力になります。<br><br>
 要するに、エンコーダは入力を「解釈」し、デコーダはその解釈を基に出力を「生成」する役割を果たします。<br><br>
@@ -76,14 +76,21 @@ class Generator(nn.Module):
     def forward(self, x):
         return log_softmax(self.proj(x), dim=-1)
 ```
-#### 多層エンコーダ
+#### エンコーダ
 Self Attention という言葉を聞いたことはありますか？<br>
-Self Attention はシーケンス内の各要素の依存関係を捉える事を目的としています<br>
-単層ではシーケンスの処理を左から右に線形に行うため、シーケンス内の各要素の依存関係を捉えることができないが、多層にすることで並列計算が可能となり、それぞれの計算結果を別のタスクに割り当てることによって、各要素の依存関係を捉える事を実現している。<br>
+Self Attention はシーケンス内の各要素の依存関係を捉える事を目的としています。<br>
+シーケンスの処理を左から右に線形に行うと、シーケンス内の各要素の依存関係を捉えることができません。しかし、シーケンス内の各トークン同士の相互作用を並列で計算することで、各要素の依存関係を捉える事を実現しています。<br>
 
-#### 多層エンコーダの構成要素
-多層エンコーダの各層には、２つのサブレイヤーがあり、"Self Attention"と"Feedforward Network"と呼ばれている。<br>
-以下では、大きい実装から小さい実装を導いていく。まずはエンコーダのクラスを作り、各層のエンコーダを作り、２つのサブレイヤー"Self Attention"と"Feedforward Network"をつくる。次にそれらを合成するクラスを作り、多層エンコーダの実装を行う。
+#### エンコーダの構成要素
+エンコーダには、２つのサブレイヤーがあり、"Self Attention"と"Feedforward Network"と呼ばれています。<br>
+"Self Attention"によって、シーケンス内の依存関係が計算されます。<br>
+その後、"Feedforward Network"によって各トークンの表現を変換されます。<br>
+この"Self Attention"↦"Feedforward Network"によって、上記の連続表現のシーケンスzが得られます<br>
+
+#### 多層エンコーダ
+深層ニューラルネットワークのように、層を増やせば増やすほど、性能は上がっていきます。それと同じように、Transformerでは、エンコーダの多層化(深層化)を行っています。<br>
+以下では、多層エンコーダをプログラムで実装していきます。実装方針は、"大きい実装から小さい実装を導いていく"という方針です。<br>
+具体的には、まずはエンコーダのクラスを作り、各層のエンコーダを作り、２つのサブレイヤー"Self Attention"と"Feedforward Network"を作ります。次にそれらを合成するクラスを作り、多層エンコーダの実装を行う。
 
 #### program: 多層エンコーダ
 ここでは、多層エンコーダの層の数を6とする。理由は知りません。<br>
@@ -107,13 +114,14 @@ class Encoder(nn.Module):
         return self.norm(x)
 ```
 #### design of multilayer encoder
-単層エンコーダで処理する場合は、計算結果は左から右に伝播されていく。<br>
-エンコーダを多層化するためには、左から伝播されていく情報に加えて、別のレイヤーの情報も受け取ることになる。<br><br>
-ただ単に足し合わせるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いてそれらを合成処理することによって、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。<br>
+エンコーダを単層で実装した場合は、"Self Attention"↦"Feedforward Network"を行うだけで良い。<br>
+しかし、多層化することによって、情報は左から右に順番に伝播されていく。<br>
+それにより、深層ニューラルネットワークのように、勾配消失や過学習などの問題が出現する<br>
+それらの問題を解決するために、ただ単に伝播させるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いて加工することで、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。<br>
 また、残差接続をした後にレイヤー正規化(Layer Normalization)[[5]](https://arxiv.org/abs/1607.06450)という操作が行われる。<br>
 レイヤー正規化は、各層の出力を正規化し、学習を安定させる役割を果たす。これにより、勾配の変動を抑え、学習がスムーズに行われるようになる。<br><br>
 上記の操作を、LayerNormと呼ぶ(多分)<br>
-↑は嘘でした。最終的に、zを出力される直前で呼ばれるのが、LayerNormでした。<br>
+↑は嘘でした。サブレイヤーの処理後、Self Attention と Feedforward Networkの処理後にサブレイヤーをconnectするときに呼ばれるのが、LayerNormでした。<br>
 
 #### program: LayerNorm
 ```python
@@ -132,8 +140,8 @@ class LayerNorm(nn.Module):
         return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
 ```
 #### 残差接続の計算
-上記では、同一層から伝播されてきた情報と、他のレイヤーの情報をただ単に足し合わせるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いてそれらを合成処理することによって、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。と書きました。<br>
-さらに、ドロップアウト[[6]](https://jmlr.org/papers/v15/srivastava14a.html)という手法があります。これは過学習を防ぐために使用され、学習時にニューロンをランダムに無効化することによって、モデルの汎化能力を高めます。<br>
+上記では、情報を右から左へ伝播させるときに、ただ伝播させるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いて加工することによって、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。と書きました。<br>
+さらに、別の研究ですが、過学習を防ぐために、ドロップアウト[[6]](https://jmlr.org/papers/v15/srivastava14a.html)という手法が提案されています。これは、学習時にニューロンをランダムに無効化することによって、モデルの汎化能力を高めます。<br>
 
 #### program: add dropout
 ```python
@@ -183,6 +191,7 @@ class EncoderLayer(nn.Module):
 これにてエンコーダの実装が完了した。
 
 #### 多層デコーダ
+
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
