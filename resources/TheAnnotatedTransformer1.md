@@ -28,18 +28,18 @@ Transformer とは、系列情報を処理する、注意機構(Attention)を主
 ### "The Annotated Transformer"[[1]][tran]とは?
 [tran]:https://nlp.seas.harvard.edu/annotated-transformer/
 上記で述べたとおり、 Transformer の最も重要な構成要素は"Attention"です。<br>
-その"Attention"の仕組みを論文"Attention is All You Need"[[2]](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)に基づいて、コードを交えて解説している良い資料です。[att]:https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf<br>
+その"Attention"の仕組みを論文"Attention is All You Need"[[2]](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)に基づいて、コードを交えて解説している良い資料です。<br>
 ### 背景
 Transformerの最大の特徴は、系列変換の並列計算の高速化です。少し難しい言い方をすると、畳み込みニューラルネットワーク（CNN）を基本構成要素として使用し、入力と出力のすべての位置に対して隠れた表現を並列に計算します。これにより、 Extended Neural GPU, ByteNet, ConvS2S の基盤を成しています。<br>
 Attentionの構成要素には、Self Attention, Multi Head Attention みたいな難しいのもありますが、ここでは割愛♡します。<br>
 
 ### Part1: モデル構造 Model Architecture
 #### 簡単な説明
-最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]][en]があります。[en]:https://arxiv.org/abs/1409.0473<br><br>
+最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]](https://arxiv.org/abs/1409.0473)があります。<br><br>
 ここで、"エンコーダ"とは、入力シンボル表現のシーケンス （x1​，...，xn​） を連続表現のシーケンス z = （z1​，...，zn​） にマッピングするものです。通常、入力されるシンボルは離散的なもので、単語や文字などが例として挙げられます。<br>マッピングされた連続表現のシーケンス z は、ニューラルネットワークの隠れ層での計算に使われます。通常のシンボルの状態だと、ニューラルネットの計算に使いにくいので、計算しやすいベクトル表現にマッピングするみたいなイメージです。<br><br>
 "デコーダ"ではzが与えられると、シンボルの出力シーケンス（y1​，...，ym​）を1要素ずつ生成します。デコーダの出力が、最終的な出力になります。<br><br>
 要するに、エンコーダは入力を「解釈」し、デコーダはその解釈を基に出力を「生成」する役割を果たします。<br><br>
-Transformerの全体図は、https://nlp.seas.harvard.edu/annotated-transformer/ のPart1を参照してください。
+Transformerの全体図は、[The Annoted Transformer](https://nlp.seas.harvard.edu/annotated-transformer/)のPart1を参照してください。
 #### program: モデル構造のクラス
 ```python
 class EncoderDecoder(nn.Module):
@@ -109,10 +109,8 @@ class Encoder(nn.Module):
 #### design of multilayer encoder
 単層エンコーダで処理する場合は、計算結果は左から右に伝播されていく。<br>
 エンコーダを多層化するためには、左から伝播されていく情報に加えて、別のレイヤーの情報も受け取ることになる。<br><br>
-ただ単に足し合わせるのではなく、残差接続(Residual Connection)[[4]][res] と呼ばれる手法を用いてそれらを合成処理することによって、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。<br>
-[res]:https://arxiv.org/abs/1512.03385
-また、残差接続をした後にレイヤー正規化(Layer Normalization)[[5]][norm]という操作が行われる。<br>
-[norm]:https://arxiv.org/abs/1607.06450
+ただ単に足し合わせるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いてそれらを合成処理することによって、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。<br>
+また、残差接続をした後にレイヤー正規化(Layer Normalization)[[5]](https://arxiv.org/abs/1607.06450)という操作が行われる。<br>
 レイヤー正規化は、各層の出力を正規化し、学習を安定させる役割を果たす。これにより、勾配の変動を抑え、学習がスムーズに行われるようになる。<br><br>
 上記の操作を、LayerNormと呼ぶ(多分)<br>
 
