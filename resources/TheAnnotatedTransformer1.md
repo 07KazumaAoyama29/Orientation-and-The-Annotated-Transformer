@@ -184,4 +184,4 @@ class EncoderLayer(nn.Module):
 This material benefited from the assistance of ChatGPT.
 
 Kazuma Aoyama(kazuma-a@lsnl.jp), Yoshiteru Taira(yoshiteru@lsnl.jp)
-[tran]: https://nlp.seas.harvard.edu/annotated-transformer/
+[tran]:https://nlp.seas.harvard.edu/annotated-transformer/
