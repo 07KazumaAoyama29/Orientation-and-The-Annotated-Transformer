@@ -28,7 +28,7 @@ Transformer とは、系列情報を処理する、注意機構(Attention)を主
 ### "The Annotated Transformer"[[1]][tran]とは?
 [tran]:https://nlp.seas.harvard.edu/annotated-transformer/
 上記で述べたとおり、 Transformer の最も重要な構成要素は"Attention"です。<br>
-その"Attention"の仕組みを論文"Attention is All You Need"[[2]][att]に基づいて、コードを交えて解説している良い資料です。[att]:https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf<br>
+その"Attention"の仕組みを論文"Attention is All You Need"[[2]](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)に基づいて、コードを交えて解説している良い資料です。[att]:https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf<br>
 ### 背景
 Transformerの最大の特徴は、系列変換の並列計算の高速化です。少し難しい言い方をすると、畳み込みニューラルネットワーク（CNN）を基本構成要素として使用し、入力と出力のすべての位置に対して隠れた表現を並列に計算します。これにより、 Extended Neural GPU, ByteNet, ConvS2S の基盤を成しています。<br>
 Attentionの構成要素には、Self Attention, Multi Head Attention みたいな難しいのもありますが、ここでは割愛♡します。<br>
