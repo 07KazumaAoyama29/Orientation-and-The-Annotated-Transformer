@@ -190,8 +190,9 @@ class EncoderLayer(nn.Module):
 #### エンコーダまとめ
 これにてエンコーダの実装が完了した。
 
-#### 多層デコーダ
-
+#### デコーダ
+上記で述べた通り、デコーダは、エンコーダからのシーケンスを受け取って、最終的な結果を返す役割を持っています。<br>
+エンコーダ同様、デコーダも多層化することにより、性能向上が図られています。
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
