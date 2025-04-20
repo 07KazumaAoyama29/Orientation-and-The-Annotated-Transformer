@@ -26,6 +26,7 @@ deactivate
 Transformer とは、系列情報を処理する、注意機構(Attention)を主体とした深層学習モデルです。<br>
 提案された当初は、英語→ドイツ語の翻訳といった自然言語処理の系列変換タスクでのみ注目されていたが、今日ではChatGPTをはじめとした様々なタスクやモダリティに応用され、その有用性が広く認識されている。<br>
 ### "The Annotated Transformer" [1][tran] とは?
+[tran]:https://nlp.seas.harvard.edu/annotated-transformer/
 上記で述べたとおり、 Transformer の最も重要な構成要素は"Attention"です。<br>
 その"Attention"の仕組みを論文"Attention is All You Need"[2]に基づいて、コードを交えて解説している良い資料です。<br>
 ### 背景
@@ -184,4 +185,3 @@ class EncoderLayer(nn.Module):
 This material benefited from the assistance of ChatGPT.
 
 Kazuma Aoyama(kazuma-a@lsnl.jp), Yoshiteru Taira(yoshiteru@lsnl.jp)
-[tran]:https://nlp.seas.harvard.edu/annotated-transformer/
