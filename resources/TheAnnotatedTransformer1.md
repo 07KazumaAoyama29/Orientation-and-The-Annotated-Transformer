@@ -22,6 +22,7 @@ pip install -r requirements.txt
 deactivate
 ```
 ### 内容目標
+- Transformerがどのようなアーキテクチャで構成されているのかを理解する。
 - 機械学習、特にTransformerの仕組みをふわっと理解する(詳しいアルゴリズムの解説はしません)。
 - Transformerがどのような処理を行っているのかの概要を理解する。
 ### Transformer
@@ -30,19 +31,22 @@ Transformer とは、系列情報を処理する、注意機構(Attention)を主
 ### "The Annotated Transformer"[[1]][tran]とは?
 [tran]:https://nlp.seas.harvard.edu/annotated-transformer/
 上記で述べたとおり、 Transformer の最も重要な構成要素は"Attention"です。<br>
-その"Attention"の仕組みを論文"Attention is All You Need"[[2]](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)に基づいて、コードを交えて解説している良い資料です。<br>
+その"Attention"の仕組みを論文"Attention is All You Need"[[2]](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)に基づいて、コードを交えて解説している良い資料として、"The Annotated Transformer"あります。<br>
+今回の勉強会では、この資料を基にpythonでコードを書きながら、Transformerについての理解を深めていくことを目的としています。<br>
+"The Annotated Transformer"は三部構成となっており、今回はPart1のモデルアーキテクチャの部分をやっていきます。<br>
+本日の予定としては、まず Transformer の背景について簡単に説明した後、エンコーダ・デコーダの実装、Attention機構の実装・・・と進めていこうと考えています<br>
 ### 背景
-Transformerの最大の特徴は、系列変換の並列計算の高速化です。少し難しい言い方をすると、畳み込みニューラルネットワーク（CNN）を基本構成要素として使用し、入力と出力のすべての位置に対して隠れた表現を並列に計算します。これにより、 Extended Neural GPU, ByteNet, ConvS2S の基盤を成しています。<br>
-Attentionの構成要素には、Self Attention, Multi Head Attention みたいな難しいのもありますが、ここでは省略します。<br>
-↑すみません、嘘です。 Self Attention に関しては、結構詳し目に解説します。 Multi Head Attention は知らない。<br>
+Transformerの最大の特徴は、系列変換の並列計算の高速化です。<br>
+少し難しい言い方をすると、畳み込みニューラルネットワーク（CNN）を基本構成要素として使用し、入力と出力のすべての位置に対して隠れた表現を並列に計算します。これにより、 Extended Neural GPU, ByteNet, ConvS2S の基盤を成しています。<br>
+Attentionの構成要素には、Self Attention, Multi Head Attention 等があります。"Self Attention"についてはエンコーダのセクションで、"Multi Head Attention"についてはデコーダのセクションで詳述します。<br>
 
 ### Part1: モデル構造 Model Architecture
-#### 簡単な説明
+#### Encoder-Decoder Architecture
 最も強力な(2023年では)自然言語処理や音声処理などで使われるモデル構造に、"エンコーダ・デコーダ構造"[[3]](https://arxiv.org/abs/1409.0473)があります。Transformerでも、このモデル構造が使われています。<br><br>
 ここで、"エンコーダ"とは、入力シンボル表現のシーケンス （x1​，...，xn​） を連続表現のシーケンス z = （z1​，...，zn​） にマッピングするものです。通常、入力されるシンボルは離散的なもので、単語や文字などが例として挙げられます。<br>マッピングされた連続表現のシーケンス z は、ニューラルネットワークの隠れ層での計算に使われます。通常のシンボルの状態だと、ニューラルネットの計算に使いにくいので、計算しやすいベクトル表現にマッピングするみたいなイメージです。<br><br>
 "デコーダ"ではzが与えられると、シンボルの出力シーケンス（y1​，...，ym​）を1要素ずつ生成します。デコーダの出力が、最終的な出力になります。<br><br>
 要するに、エンコーダは入力を「解釈」し、デコーダはその解釈を基に出力を「生成」する役割を果たします。<br><br>
-Transformerの全体図は、[The Annoted Transformer](https://nlp.seas.harvard.edu/annotated-transformer/)のPart1を参照してください。
+Transformerの全体図は、[The Annoted Transformer のPart1](https://nlp.seas.harvard.edu/annotated-transformer/#model-architecture)を参照してください。
 #### program: モデル構造のクラス
 ```python
 class EncoderDecoder(nn.Module):
@@ -88,8 +92,8 @@ Self Attention では、シーケンス内の各要素の依存関係を捉え�
 #### エンコーダの構成要素
 エンコーダには、２つのサブレイヤーがあり、"Self Attention"と"Feedforward Network"と呼ばれています。<br>
 "Self Attention"によって、シーケンス内の依存関係が計算されます。<br>
-その後、"Feedforward Network"によって各トークンの表現を変換されます。<br>
-つまり、入力されたシンボルを"Self Attention"↦"Feedforward Network"を通すことによって、上記の連続表現のシーケンスzが得られます<br>
+その後、"Feedforward Network"によって各トークンの表現が変換されます。<br>
+つまり、入力されたシンボルを"Self Attention"↦"Feedforward Network"に通すことによって、上記の連続表現のシーケンスzが得られます<br>
 
 #### 多層エンコーダ
 深層ニューラルネットワークの特徴として、層を増やせば増やすほど性能が上がるというのは皆さんご存じかと思います。<br>
@@ -273,7 +277,7 @@ class Decoder(nn.Module):
 ```
 #### デコーダのサブレイヤ
 エンコーダは"Self Attention"と"Feed-Forward Network"の二つのサブレイヤに分かれているという話は覚えていますか？<br>
-デコーダもサブレイヤが分かれているの複数あるのですが、エンコーダのサブレイヤ"Self Attention"と"Feed-Forward Network"に加えて、"Multi Head Attention(Encoder‑Decoder Attention（エンコーダ出力に対する多頭注意）)"の三つのサブレイヤに分かれています。<br>
+デコーダもサブレイヤが複数あるのですが、エンコーダのサブレイヤ"Self Attention"と"Feed-Forward Network"に加えて、"Multi Head Attention(Encoder‑Decoder Attention（エンコーダ出力に対する多頭注意）)"の三つのサブレイヤに分かれています。<br>
 "Self Attention"と"Feed-Forward Network"の役割はエンコーダと同じですが、"Multi Head Attention"では、エンコーダが作った文脈ベクトル全体を各デコーダ位置から閲覧させ，入力系列との整合を取るという役割があります。<br>
 ただし、各サブレイヤの前後に残差接続＋レイヤ正規化が行われる点はエンコーダと一緒です。<br>
 
@@ -351,7 +355,7 @@ show_example(example_mask)
 
 #### Attention
 上記では、Transformerの入口部分(前処理)であるエンコーダと、出口の部分であるデコーダについて、説明と実装を行いました。<br>
-ここでは、ようやくTransformerの中心演算を担っている"Attention"についてpythonによる実装を通して説明を行っていきます。<br>
+ここからは、ようやくTransformerの中心演算を担っている"Attention"について、pythonによる実装を通して説明を行っていきます。<br>
 
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
@@ -362,10 +366,10 @@ show_example(example_mask)
 [6] Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, Ruslan Salakhutdinov. Dropout: A Simple Way to Prevent Neural Networks from Overfitting. https://jmlr.org/papers/v15/srivastava14a.html
 
 
-[3] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
-[4] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
-[5] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう　第二版. O'Reilly Japan<br>
-[6] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
+[7] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
+[8] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
+[9] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう　第二版. O'Reilly Japan<br>
+[10] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
 
 This material benefited from the assistance of ChatGPT.
 
