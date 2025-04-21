@@ -1,4 +1,4 @@
-# 2024-04-15勉強会<br>オリエンテーション + The Annotated Transformer①
+# 大崎研自主勉強会<br>オリエンテーション + The Annotated Transformer
 ## 概要
 - 大崎研自主勉強会についての資料です。<br>
 - resoucesフォルダに勉強会で用いる資料を掲載しています。適宜参照してください。<br>

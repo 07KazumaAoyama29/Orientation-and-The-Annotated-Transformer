@@ -1,4 +1,4 @@
-## 2.The Annotated Transformer
+## The Annotated Transformer Part1
 ### pythonの環境構築(仮想環境推奨)
 #### "venv"という名前の仮想環境を作成 #pythonのバージョンは3.9にしてください。
 ```bash
