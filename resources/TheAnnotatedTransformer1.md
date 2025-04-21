@@ -350,8 +350,8 @@ show_example(example_mask)
 ```
 
 #### Attention
-上記では、Transformerの入口部分(前処理)であるエンコーダと、出口の部分であるデコーダについて、説明と実装を行いました。<br>
-ここからは、ようやくTransformerの中心演算を担っている"Attention"について、pythonによる実装を通して説明を行っていきます。<br>
+上記では、Transformerを構造的な概念である、エンコーダ・デコーダ構造のレベルで説明と実装を行いました。ざっくり言うと、"大雑把にTransformerとはこういう構成になってるよ"という紹介をしました。<br>
+ここからは、エンコーダとデコーダ構造の中身、Transformerの中心演算を担っている"Attention"について、pythonによる実装を通して理解を深めていきます。<br>
 
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
