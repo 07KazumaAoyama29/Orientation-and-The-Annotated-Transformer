@@ -353,6 +353,16 @@ show_example(example_mask)
 上記では、Transformerを構造的な概念である、エンコーダ・デコーダ構造のレベルで説明と実装を行いました。ざっくり言うと、"大雑把にTransformerとはこういう構成になってるよ"という紹介をしました。<br>
 ここからは、エンコーダとデコーダ構造の中身、Transformerの中心演算を担っている"Attention"について、pythonによる実装を通して理解を深めていきます。<br>
 
+#### Attention 概要
+Attention関数は、クエリとキー・値ペアの集合を出力にマッピングする関数として定義できます。<br>
+数式で表すと、以下になります。<br>
+$$
+\mathrm{Attention}(Q,\,K,\,V)
+    = \operatorname{softmax}\!\left(\frac{Q\,K^{\mathsf T}}{\sqrt{d_k}}\right)V
+$$
+ここで、クエリ、キー、値、および出力はすべてベクトルです。出力は、各値に割り当てられた重みによる値の加重和として計算されます。この重みは、クエリと対応するキーの互換性関数によって計算されます。
+私たちは、この特定の注意機能を「スケーラブル・ドットプロダクト・アテンション」と呼びます。入力は、次元dkのクエリとキー、および次元dvの値から構成されます。クエリとすべてのキーのドット積を計算し、それぞれをdkで除算し、ソフトマックス関数を適用して値の重みを取得します。
+
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
