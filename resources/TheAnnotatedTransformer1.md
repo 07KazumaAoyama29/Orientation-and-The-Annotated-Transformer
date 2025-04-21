@@ -142,11 +142,9 @@ Transformer を提案した Vaswani らの元論文では，エンコーダ／�
 <cite>NeurIPS Papers
 
 Ｄ発展形
-以後の研究では
-
-幅（d_model や h）を増す（Transformer‑big）
-
-深さをさらに積む（BERT‑base 12 層，GPT‑3 96 層など）
+以後の研究では、
+・幅（d_model や h）を増す（Transformer‑big）
+・深さをさらに積む（BERT‑base 12 層，GPT‑3 96 層など）
 といった拡張が行われたが，これはハードウェアと最適化技術の進歩によって
 「6 層の制約」が緩和されたためであり，理論的に 6 層でなければならないわけではない．
 
@@ -176,10 +174,10 @@ class Encoder(nn.Module):
         return self.norm(x)
 ```
 #### design of multilayer encoder
-エンコーダを単層で実装した場合は、"Self Attention"↦"Feedforward Network"を行うだけで良い。<br>
+エンコーダを単層で実装する場合は、"Self Attention"↦"Feedforward Network"を行うだけで良い。<br>
 しかし、多層化することによって、情報は左から右に順番に伝播されていく。<br>
-それにより、深層ニューラルネットワークのように、勾配消失や過学習などの問題が出現する<br>
-それらの問題を解決するために、ただ単に伝播させるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いて加工することで、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。<br>
+それにより、深層ニューラルネットワークのように、勾配消失や過学習などの問題が出現する。<br>
+それらの問題を解決するために、ただ単に伝播させるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いて加工することで、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくする。<br>
 また、残差接続をした後にレイヤー正規化(Layer Normalization)[[5]](https://arxiv.org/abs/1607.06450)という操作が行われる。<br>
 レイヤー正規化は、各層の出力を正規化し、学習を安定させる役割を果たす。これにより、勾配の変動を抑え、学習がスムーズに行われるようになる。<br><br>
 上記の操作を、LayerNormと呼ぶ(多分)<br>
@@ -203,7 +201,8 @@ class LayerNorm(nn.Module):
 ```
 #### 残差接続の計算
 上記では、情報を右から左へ伝播させるときに、ただ伝播させるのではなく、残差接続(Residual Connection)[[4]](https://arxiv.org/abs/1512.03385)と呼ばれる手法を用いて加工することによって、深いネットワークでの勾配消失を防ぎ、情報が層を越えて伝播しやすくなる。と書きました。<br>
-さらに、別の研究ですが、過学習を防ぐために、ドロップアウト[[6]](https://jmlr.org/papers/v15/srivastava14a.html)という手法が提案されています。これは、学習時にニューロンをランダムに無効化することによって、モデルの汎化能力を高めます。<br>
+さらに、別の研究ですが、過学習を防ぐために、ドロップアウト[[6]](https://jmlr.org/papers/v15/srivastava14a.html)という手法も提案されています。<br>
+これは、学習時にニューロンをランダムに無効化することによって、モデルの汎化能力を高めます。<br>
 
 #### program: add dropout
 ```python
@@ -255,6 +254,101 @@ class EncoderLayer(nn.Module):
 #### デコーダ
 上記で述べた通り、デコーダは、エンコーダからのシーケンスを受け取って、最終的な結果を返す役割を持っています。<br>
 エンコーダ同様、デコーダも多層化することにより、性能向上が図られています。
+
+#### program: 多層デコーダ
+上記のエンコーダ同様、多層デコーダの層を６とする。
+```python
+class Decoder(nn.Module):
+    "Generic N layer decoder with masking."
+
+    def __init__(self, layer, N):
+        super(Decoder, self).__init__()
+        self.layers = clones(layer, N)
+        self.norm = LayerNorm(layer.size)
+
+    def forward(self, x, memory, src_mask, tgt_mask):
+        for layer in self.layers:
+            x = layer(x, memory, src_mask, tgt_mask)
+        return self.norm(x)
+```
+#### デコーダのサブレイヤ
+エンコーダは"Self Attention"と"Feed-Forward Network"の二つのサブレイヤに分かれているという話は覚えていますか？<br>
+デコーダもサブレイヤが分かれているの複数あるのですが、エンコーダのサブレイヤ"Self Attention"と"Feed-Forward Network"に加えて、"Multi Head Attention(Encoder‑Decoder Attention（エンコーダ出力に対する多頭注意）)"の三つのサブレイヤに分かれています。<br>
+"Self Attention"と"Feed-Forward Network"の役割はエンコーダと同じですが、"Multi Head Attention"では、エンコーダが作った文脈ベクトル全体を各デコーダ位置から閲覧させ，入力系列との整合を取るという役割があります。<br>
+ただし、各サブレイヤの前後に残差接続＋レイヤ正規化が行われる点はエンコーダと一緒です。<br>
+
+#### program: 各層のデコーダの実装
+```python
+class DecoderLayer(nn.Module):
+    "Decoder is made of self-attn, src-attn, and feed forward (defined below)"
+
+    def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
+        super(DecoderLayer, self).__init__()
+        self.size = size
+        self.self_attn = self_attn
+        self.src_attn = src_attn
+        self.feed_forward = feed_forward
+        self.sublayer = clones(SublayerConnection(size, dropout), 3)
+
+    def forward(self, x, memory, src_mask, tgt_mask):
+        "Follow Figure 1 (right) for connections."
+        m = memory
+        x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, tgt_mask))
+        x = self.sublayer[1](x, lambda x: self.src_attn(x, m, m, src_mask))
+        return self.sublayer[2](x, self.feed_forward)
+```
+#### subsequence mask
+subsequence maskを用いることで、デコーダースタックの自己注意サブレイヤーを修正し、位置が後続の位置に注意を向けることを防止します。<br>
+このマスク処理と、出力埋め込みが1位置分オフセットされているという事実を組み合わせることで、位置iの予測は位置i未満の既知の出力をのみに依存するように保証されます。<br>
+と、小難しい説明が書いてありますが、subsequence maskは、文字の通りマスクです。未来のトークンの参照を防ぐという役割を持つマスクです。<br>
+何故未来のトークンを隠さないといけないかというと、未来のトークンには、現在訓練中のデータがあり、それを訓練に使ってしまうと、訓練時にだけ存在する手掛かりに依存した重みが形成されてしまい、実用時に性能が急落してしまうから。<br>
+下記のshow_example(example_mask)関数を実行すると、ヒートマップが表示されるが、これはsubsequence maskを視覚的に理解し易いようにする図です。つまり訓練には関係のない図です。<br>
+縦軸がクエリ位置で、横軸がキー位置、色は明るいところほどトークンがよく見え、暗いところほど見えないというsubsequence maskの働きを分かりやすいように描画してくれています。<br>
+#### program: 
+```python
+def subsequent_mask(size):
+    "Mask out subsequent positions."
+    attn_shape = (1, size, size)
+    subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1).type(
+        torch.uint8
+    )
+    return subsequent_mask == 0
+
+def example_mask():
+    LS_data = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "Subsequent Mask": subsequent_mask(20)[0][x, y].flatten(),
+                    "Window": y,
+                    "Masking": x,
+                }
+            )
+            for y in range(20)
+            for x in range(20)
+        ]
+    )
+
+    return (
+        alt.Chart(LS_data)
+        .mark_rect()
+        .properties(height=250, width=250)
+        .encode(
+            alt.X("Window:O"),
+            alt.Y("Masking:O"),
+            alt.Color("Subsequent Mask:Q", scale=alt.Scale(scheme="viridis")),
+        )
+        .interactive()
+    )
+
+
+show_example(example_mask)
+```
+
+#### Attention
+上記では、Transformerの入口部分(前処理)であるエンコーダと、出口の部分であるデコーダについて、説明と実装を行いました。<br>
+ここでは、ようやくTransformerの中心演算を担っている"Attention"についてpythonによる実装を通して説明を行っていきます。<br>
+
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
