@@ -354,17 +354,38 @@ show_example(example_mask)
 ここからは、エンコーダとデコーダ構造の中身、Transformerの中心演算を担っている"Attention"について、pythonによる実装を通して理解を深めていきます。<br>
 
 #### Attention 概要
-Attention関数は、クエリとキー・値ペアの集合を出力にマッピングする関数として定義できます。<br>
+Attention関数は、Query(Q)とKey(K)とValue(V)の集合を出力にマッピングする関数として定義できます。<br>
+先ほど出力したsubsequence maskを見ると分かりやすいかもしれませんが、(Q, K)によってVが決まります<br>
 数式で表すと、以下になります。<br>
-```math
-e^{i x} = \cos{x} + i \sin{x}
-```
 ```math
 \mathrm{Attention}(Q,K,V)
   = \mathrm{softmax}\!\left(\frac{Q\,K^{\mathsf T}}{\sqrt{d_k}}\right)V
 ```
-ここで、クエリ、キー、値、および出力はすべてベクトルです。出力は、各値に割り当てられた重みによる値の加重和として計算されます。この重みは、クエリと対応するキーの互換性関数によって計算されます。
-私たちは、この特定の注意機能を「スケーラブル・ドットプロダクト・アテンション」と呼びます。入力は、次元dkのクエリとキー、および次元dvの値から構成されます。クエリとすべてのキーのドット積を計算し、それぞれをdkで除算し、ソフトマックス関数を適用して値の重みを取得します。
+ここで、クエリ、キー、値、および出力はすべてベクトルです。
+```text
+出力は、各値に割り当てられた重みによる値の加重和として計算されます。この重みは、
+クエリと対応するキーの互換性関数によって計算されます。
+私たちは、この特定の注意機能を「スケーラブル・ドットプロダクト・アテンション」と呼びます。
+入力は、次元dkのクエリとキー、および次元dvの値から構成されます。クエリとすべてのキーの
+ドット積を計算し、それぞれをdkで除算し、ソフトマックス関数を適用して値の重みを取得します。
+```
+#### program: Attention
+```python
+def attention(query, key, value, mask=None, dropout=None):
+    "Compute 'Scaled Dot Product Attention'"
+    d_k = query.size(-1)
+    scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k)
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, -1e9)
+    p_attn = scores.softmax(dim=-1)
+    if dropout is not None:
+        p_attn = dropout(p_attn)
+    return torch.matmul(p_attn, value), p_attn
+```
+#### Additive Attention と Dot Product Attention
+上記の Attention 関数のコメントに、"スケール済みの Dot Product Attention を計算する"と書いてありました。<br>
+有名な Attenton 機構として、"Additive Attention" と "Dot Product Attention"があります。<br>
+超簡単な説明としては、"Additive Attention"は性能はいいがコストが高く、"Dot Product Attention"は性能はそこそこだがコストが低いというトレードオフの関係があります。<br>
 
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>

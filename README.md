@@ -31,6 +31,7 @@
 2025.04.20 add requirements.txt<br>
 2025.04.21 complete encoder section<br>
 2025.04.21 complete decoder section<br>
+2025.04.22 add attention section<br>
 
 This material benefited from the assistance of ChatGPT.
 
