@@ -46,7 +46,7 @@ Attentionの構成要素には、Self Attention, Multi Head Attention 等があ�
 ここで、"エンコーダ"とは、入力シンボル表現のシーケンス （x1​，...，xn​） を連続表現のシーケンス z = （z1​，...，zn​） にマッピングするものです。通常、入力されるシンボルは離散的なもので、単語や文字などが例として挙げられます。<br>マッピングされた連続表現のシーケンス z は、ニューラルネットワークの隠れ層での計算に使われます。通常のシンボルの状態だと、ニューラルネットの計算に使いにくいので、計算しやすいベクトル表現にマッピングするみたいなイメージです。<br><br>
 "デコーダ"ではzが与えられると、シンボルの出力シーケンス（y1​，...，ym​）を1要素ずつ生成します。デコーダの出力が、最終的な出力になります。<br><br>
 要するに、エンコーダは入力を「解釈」し、デコーダはその解釈を基に出力を「生成」する役割を果たします。<br><br>
-Transformerの全体図は、[The Annoted Transformer のPart1](https://nlp.seas.harvard.edu/annotated-transformer/#model-architecture)を参照してください。
+Transformerの全体図は、[The Annoted Transformer のPart1](https://nlp.seas.harvard.edu/annotated-transformer/#model-architecture)を参照してください。<br>
 #### program: モデル構造のクラス
 ```python
 class EncoderDecoder(nn.Module):
@@ -432,12 +432,12 @@ dkの値が大きい場合、ドット積の絶対値が非常に大きくなり
 ```
 だそうです。<br>
 なぜ√dkで割るのかですが、
-- 内積のスケール問題
+- 内積のスケール問題<br>
 各要素が平均 0、分散 1 のとき、<br>
 Var(q * k) = dkとなり次元が増えるほど値が大きくなる[[cite]](https://ai.stackexchange.com/questions/21237/why-does-this-multiplication-of-q-and-k-have-a-variance-of-d-k-in-scaled?utm_source=chatgpt.com)。​
-- softmax の飽和回避
+- softmax の飽和回避<br>
 大きすぎるスコアは softmax を極端に尖らせ、勾配がほぼ 0 になり学習が鈍化[[10]]](https://glassboxmedicine.com/2019/08/15/the-transformer-attention-is-all-you-need/?utm_source=chatgpt.com)。
-- √dkで標準化
+- √dkで標準化<br>
 分散 ≈ 1に正規化され、softmax が適度な温度で働く。​<br>
 要するにdkは「キー・クエリ空間の次元」を示し、その平方根で割るのは 数値安定性と学習効率を保つための温度スケーリング だそうです。<br>
 
