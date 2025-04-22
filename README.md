@@ -7,16 +7,20 @@
 ## 参考文献一覧
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
-[3] Dzmitry Bahdanau, KyungHyun Cho, Yoshua Bengio. NEURAL MACHINE TRANSLATION BY JOINTLY LEARNING TO ALIGN AND TRANSLATE(2014). https://arxiv.org/abs/1409.0473<br>
+[3] Dzmitry Bahdanau, KyungHyun Cho(2014), Yoshua Bengio. Neural Machine Translation by Jointly Learning to Align and Translate. https://arxiv.org/abs/1409.0473<br>
 [4] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun. Deep Residual Learning for Image Recognition. https://arxiv.org/abs/1512.03385<br>
 [5] Jimmy Lei Ba, Jamie Ryan Kiros, Geoffrey E. Hinton. Layer Normalization. https://arxiv.org/abs/1607.06450<br>
 [6] Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, Ruslan Salakhutdinov. Dropout: A Simple Way to Prevent Neural Networks from Overfitting. https://jmlr.org/papers/v15/srivastava14a.html
+[7] Denny Britz, Anna Goldie, Minh-Thang Luong, Quoc Le. Massive Exploration of Neural Machine Translation Architectures. https://arxiv.org/abs/1703.03906
+[8] Sebastian Raschka. Understanding and Coding Self-Attention, Multi-Head Attention, Causal-Attention, and Cross-Attention in LLMs. https://magazine.sebastianraschka.com/p/understanding-and-coding-self-attention?utm_source=chatgpt.com
+[9] Peng Jin, Bo Zhu, Li Yuan, Shuicheng Yan. MoH: Multi-Head Attention as Mixture-of-Head Attention. https://arxiv.org/abs/2410.11842
+[10] Rachel Draelos. The Transformer: Attention Is All You Need. https://glassboxmedicine.com/2019/08/15/the-transformer-attention-is-all-you-need/?utm_source=chatgpt.com
 
 
-[7] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
-[8] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
-[9] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう　第二版. O'Reilly Japan<br>
-[10] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
+[11] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
+[12] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
+[13] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう 第二版. O'Reilly Japan<br>
+[14] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
 
 ## 更新履歴
 2025.04.09 first commit<br>

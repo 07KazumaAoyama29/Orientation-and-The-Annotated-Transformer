@@ -355,13 +355,14 @@ show_example(example_mask)
 
 #### Attention 概要
 Attention関数は、Query(Q)とKey(K)とValue(V)の集合を出力にマッピングする関数として定義できます。<br>
-先ほど出力したsubsequence maskを見ると分かりやすいかもしれませんが、(Q, K)によってVが決まります<br>
+先ほど出力したsubsequence maskを見ると分かりやすいかもしれませんが、(Q, K)によってVが決まります。<br>
 数式で表すと、以下になります。<br>
 ```math
 \mathrm{Attention}(Q,K,V)
   = \mathrm{softmax}\!\left(\frac{Q\,K^{\mathsf T}}{\sqrt{d_k}}\right)V
 ```
-ここで、クエリ、キー、値、および出力はすべてベクトルです。
+ここで、クエリ、キー、値、および出力はすべてベクトルです。<br>
+また、 dk はキー（とクエリ）のベクトル長、すなわち各ヘッドで Q・K が持つ次元数を表します。Transformer‑base なら dk = d_model / h（例：512/8 = 64）です。<br>
 ```text
 出力は、各値に割り当てられた重みによる値の加重和として計算されます。この重みは、
 クエリと対応するキーの互換性関数によって計算されます。
@@ -382,24 +383,87 @@ def attention(query, key, value, mask=None, dropout=None):
         p_attn = dropout(p_attn)
     return torch.matmul(p_attn, value), p_attn
 ```
-#### Additive Attention と Dot Product Attention
-上記の Attention 関数のコメントに、"スケール済みの Dot Product Attention を計算する"と書いてありました。<br>
-有名な Attenton 機構として、"Additive Attention" と "Dot Product Attention"があります。<br>
-超簡単な説明としては、"Additive Attention"は性能はいいがコストが高く、"Dot Product Attention"は性能はそこそこだがコストが低いというトレードオフの関係があります。<br>
+#### Attention機構の構成要素
+Attention機構では、①スコア関数 ②ヘッド構成 ③接続形態が核を成しています。<br>
+①のスコア関数は文字通り、スコアの計算を行う関数です。どのようにスコアを計算するのかを決めます。<br>
+②のヘッド構成は、何層で Attention の計算を行うかを表しており、上記の6層エンコーダ・デコーダでは6になる・・・と思っていたのですが、誤りでした。<br>
+正しくは、
+```text
+ヘッド (head) は 1 つの注意層の内部 をいくつに“並列分割”して計算するかを示すパラメータ。
+例: “8 heads” なら 同じ層の中で 8 本の Scaled Dot Product（or additive など）Attentionを
+同時に計算し，結果を結合して次の層に送る。
+```
+で、Attention全体の話ではなく、個々の話でした。[[8]](https://magazine.sebastianraschka.com/p/understanding-and-coding-self-attention?utm_source=chatgpt.com)[[9]](https://arxiv.org/abs/2410.11842)<br>
+前述した層 (layer) は こうした "self Attention" + "Feed Forward Network" を縦に積む深さを指します。<br>
+Transformer‑base だとエンコーダ 6 層・デコーダ 6 層が典型例。ヘッド数を増やしても「層が増える」わけではないそうです。<br>
+③の接続形態は上記のQ, K, V を「どの系列・モダリティから取るか」を定義する概念。<br>
+これまでも何度か出てきた Self Attention は、同一系列内からしか参照しないという接続形態です。<br>
+Self Attentionの他にも、"Cross Attention や Casual Attention"などがある。
+この三つが Attention 機構の核をなしていますが、補助要素として、上記でも出てきた<br>
+```table
+区分 | 主な目的 | 代表例
+正規化 | 勾配爆発・消失を抑え学習安定 | LayerNorm
+残差接続 | 深層化による情報劣化を回避 | Add & Norm ブロック
+マスク | 因果律保持・パディング除去 | サブシーケンスマスク，パディングマスク
+位置符号化 | 系列順序を注入 | Sinusoidal，Learnable PE
+ドロップアウト | 汎化性能向上 | Attention Dropout，FFN Dropout
+スケーリング | 大次元での数値安定化 | 1/dk1/\sqrt{d_k}1/dk​​ 係数
+最適化技巧 | 収束促進・性能向上 | 学習率ウォームアップ，重み減衰 等 
+```
+があり、これらを調整することで、実際に使えるレベルまで引き上げています。<br>
+#### ①スコア関数
+まずは、①のスコア関数から説明していきたいと思います。<br>
+上記の Attention 関数のコメントに、"スケーリングされた Dot Product Attention を計算する"と書いてありました。<br>
+Transformer では、スコア関数として Scaled Dot Production を用いるのが主流のようです。<br> 
+そもそも、有名なスコア関数に、"Additive Attention"[[3]](https://arxiv.org/abs/1409.0473) と "Dot Product Attention"の二つがあります。<br>
+超簡単な説明としては、"Additive Attention"は性能はいいがコストが高く[[7]](https://arxiv.org/abs/1703.03906)、"Dot Product Attention"は性能はそこそこだがコストが低いというトレードオフの関係があります。<br>
+Attention を単層で用いる場合は"Additive Attention"を用いることが多いようですが、 Transformer のような多層構造で Attention を用いる場合はコストの観点から、"Dot Product Attention"が使われるのが主流のようです。<br>
+
+#### 備考: なぜスケールをする必要があるのか
+上記の"Dot Product Attention"は、スケーリングをすると書かれていました。<br>
+超簡単にいうと、"Additive Attention"の性能に近づけるためにスケーリングを行うのですが、詳しくは参考文献[[7]](https://arxiv.org/abs/1703.03906)をご覧ください。<br>
+簡単に説明すると、
+```text
+dkの値が小さい場合、両メカニズムの性能は類似していますが、dkの値が大きくなるにつれ、
+加法注意はスケーリングなしでドット積注意を上回ります。
+dkの値が大きい場合、ドット積の絶対値が非常に大きくなり、ソフトマックス関数が極端に小さな
+勾配を持つ領域に押し込まれるためだと推測されます。
+この効果を相殺するため、内積を1/√dk​​​でスケーリングします。
+```
+だそうです。<br>
+なぜ√dkで割るのかですが、
+- 内積のスケール問題
+各要素が平均 0、分散 1 のとき、<br>
+Var(q * k) = dkとなり次元が増えるほど値が大きくなる[[cite]](https://ai.stackexchange.com/questions/21237/why-does-this-multiplication-of-q-and-k-have-a-variance-of-d-k-in-scaled?utm_source=chatgpt.com)。​
+- softmax の飽和回避
+大きすぎるスコアは softmax を極端に尖らせ、勾配がほぼ 0 になり学習が鈍化[[10]]](https://glassboxmedicine.com/2019/08/15/the-transformer-attention-is-all-you-need/?utm_source=chatgpt.com)。
+- √dkで標準化
+分散 ≈ 1に正規化され、softmax が適度な温度で働く。​<br>
+要するにdkは「キー・クエリ空間の次元」を示し、その平方根で割るのは 数値安定性と学習効率を保つための温度スケーリング だそうです。<br>
+
+#### ②ヘッド構成
+次に、②のヘッド構成について説明していきます。<br>
+上記のデコーダの所では、"Multi Head Attention"の話をしました。<br>
+ヘッド構成とは、上述の通り"1 つの注意層の内部 をいくつに“並列分割”して計算するかを示すパラメータ。"でした。<br>
+
 
 ## 参考文献
 [1] Austin Huang, Suraj Subramanian, Jonathan Sum, Khalid Almubarak, and Stella Biderman(2022). The Annotated Transformer. https://nlp.seas.harvard.edu/annotated-transformer/<br>
 [2] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser(2017). Attention Is All You Need. Advances in Neural Information Processing Systems 30 (NIPS 2017)<br>
-[3] Dzmitry Bahdanau, KyungHyun Cho, Yoshua Bengio. NEURAL MACHINE TRANSLATION BY JOINTLY LEARNING TO ALIGN AND TRANSLATE(2014). https://arxiv.org/abs/1409.0473<br>
+[3] Dzmitry Bahdanau, KyungHyun Cho(2014), Yoshua Bengio. Neural Machine Translation by Jointly Learning to Align and Translate. https://arxiv.org/abs/1409.0473<br>
 [4] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun. Deep Residual Learning for Image Recognition. https://arxiv.org/abs/1512.03385<br>
 [5] Jimmy Lei Ba, Jamie Ryan Kiros, Geoffrey E. Hinton. Layer Normalization. https://arxiv.org/abs/1607.06450<br>
 [6] Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, Ruslan Salakhutdinov. Dropout: A Simple Way to Prevent Neural Networks from Overfitting. https://jmlr.org/papers/v15/srivastava14a.html
+[7] Denny Britz, Anna Goldie, Minh-Thang Luong, Quoc Le. Massive Exploration of Neural Machine Translation Architectures. https://arxiv.org/abs/1703.03906
+[8] Sebastian Raschka. Understanding and Coding Self-Attention, Multi-Head Attention, Causal-Attention, and Cross-Attention in LLMs. https://magazine.sebastianraschka.com/p/understanding-and-coding-self-attention?utm_source=chatgpt.com
+[9] Peng Jin, Bo Zhu, Li Yuan, Shuicheng Yan. MoH: Multi-Head Attention as Mixture-of-Head Attention. https://arxiv.org/abs/2410.11842
+[10] Rachel Draelos. The Transformer: Attention Is All You Need. https://glassboxmedicine.com/2019/08/15/the-transformer-attention-is-all-you-need/?utm_source=chatgpt.com
 
 
-[7] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
-[8] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
-[9] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう　第二版. O'Reilly Japan<br>
-[10] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
+[11] 森下篤(2024). Visual Studio Code 実践ガイド. 技術評論社<br>
+[12] Bill Ludanovic, 鈴木駿, 長尾高弘(2022). 入門 Python3 第二版. O'Reilly Japan<br>
+[13] Al Sweigart, 相川愛三(2023). 退屈なことはPythonにやらせよう 第二版. O'Reilly Japan<br>
+[14] Al Sweigart, 岡田祐一(2022). きれいなPythonプログラミング. マイナビ<br>
 
 This material benefited from the assistance of ChatGPT.
 
