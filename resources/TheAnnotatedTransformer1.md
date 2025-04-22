@@ -436,7 +436,7 @@ dkの値が大きい場合、ドット積の絶対値が非常に大きくなり
 各要素が平均 0、分散 1 のとき、<br>
 Var(q * k) = dkとなり次元が増えるほど値が大きくなる[[cite]](https://ai.stackexchange.com/questions/21237/why-does-this-multiplication-of-q-and-k-have-a-variance-of-d-k-in-scaled?utm_source=chatgpt.com)。​
 - softmax の飽和回避<br>
-大きすぎるスコアは softmax を極端に尖らせ、勾配がほぼ 0 になり学習が鈍化[[10]]](https://glassboxmedicine.com/2019/08/15/the-transformer-attention-is-all-you-need/?utm_source=chatgpt.com)。
+大きすぎるスコアは softmax を極端に尖らせ、勾配がほぼ 0 になり学習が鈍化[[10]](https://glassboxmedicine.com/2019/08/15/the-transformer-attention-is-all-you-need/?utm_source=chatgpt.com)。
 - √dkで標準化<br>
 分散 ≈ 1に正規化され、softmax が適度な温度で働く。​<br>
 要するにdkは「キー・クエリ空間の次元」を示し、その平方根で割るのは 数値安定性と学習効率を保つための温度スケーリング だそうです。<br>
