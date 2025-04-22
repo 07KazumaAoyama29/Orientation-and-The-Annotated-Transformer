@@ -1,5 +1,7 @@
 ## The Annotated Transformer Part1
 ### pythonの環境構築(仮想環境推奨)
+#### python3.9.13をインストール
+https://www.python.org/downloads/source/
 #### "venv"という名前の仮想環境を作成 #pythonのバージョンは3.9にしてください。
 ```bash
 py -3.9 -m venv venv 
@@ -16,6 +18,13 @@ source ./venv/Scripts/activate
 #### 必要なmoduleのインストール #※めっちゃ時間かかります
 ```bash
 pip install -r requirements.txt 
+```
+#### Windowsでエラーが出る場合
+以下のコマンドを試してみてください。<br>
+```bash
+tr -d '\r' < ./venv/Scripts/activate > ./venv/Scripts/activate.new
+mv ./venv/Scripts/activate.new ./venv/Scripts/activate
+pip install -r requirements.txt
 ```
 #### 仮想環境のディアクティベート
 ```bash
